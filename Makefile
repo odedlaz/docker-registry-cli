@@ -6,15 +6,21 @@ LDFLAGS=-ldflags "-X github.com/odedlaz/docker-registry-cli/core.build=`git rev-
 .DEFAULT_GOAL: all
 
 .PHONY: all
-all: build build-alpine
+all: build build-alpine64 build-osx64
+
+# options: https://stackoverflow.com/questions/20728767/all-possible-goos-value
 
 .PHONY: build
 build:
-	go build ${LDFLAGS} -o ${SOURCEDIR}/bin/${BINARY}
+	GOOS=linux GOARCH=amd64 go build ${LDFLAGS} -o ${SOURCEDIR}/bin/${BINARY}-linux64
 
 .PHONY: build-alpine
-build-alpine:
-	CGO_ENABLED=0 go build ${LDFLAGS} -a -installsuffix cgo -o ${SOURCEDIR}/bin/${BINARY}-alpine
+build-alpine64:
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build ${LDFLAGS} -a -installsuffix cgo -o ${SOURCEDIR}/bin/${BINARY}-alpine64
+
+.PHONY: build-osx
+build-osx64:
+	GOOS=darwin GOARCH=amd64 go build ${LDFLAGS} -a -installsuffix cgo -o ${SOURCEDIR}/bin/${BINARY}-osx64
 
 .PHONY: test
 test:
