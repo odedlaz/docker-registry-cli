@@ -10,11 +10,9 @@ import (
 	"github.com/odedlaz/docker-registry-cli/core/config"
 )
 
-func AddRegistry(settings config.Settings) error {
+func AddRegistry(registry string, settings config.Settings) error {
 	reader := bufio.NewReader(os.Stdin)
 	// Prompt and read
-	fmt.Print("Enter Docker Registry: ")
-	registry, _ := reader.ReadString('\n')
 	fmt.Print("Enter Username: ")
 	username, _ := reader.ReadString('\n')
 	fmt.Print("Enter Password: ")
