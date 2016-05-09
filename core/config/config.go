@@ -13,7 +13,8 @@ import (
 
 var (
 	// DefaultFilename is the default path for the docker config
-	DefaultFilename = fmt.Sprintf("%s/.docker/config.json", os.Getenv("HOME"))
+	DefaultFilename    = fmt.Sprintf("%s/.docker/config.json", os.Getenv("HOME"))
+	DefaultOldFilename = fmt.Sprintf("%s/.dockercfg", os.Getenv("HOME"))
 )
 
 // EncryptedRegistry blat
@@ -80,6 +81,9 @@ func New(filename string) *Settings {
 // New the yaml settings from given path
 func Load(filename string) (*Settings, error) {
 	if _, err := os.Stat(filename); os.IsNotExist(err) {
+		if _, err := os.Stat(DefaultOldFilename); err == nil {
+			return New(filename), fmt.Errorf("config file doesn't exist at: %s, but detected dockercfg at: %s", filename, DefaultFilename)
+		}
 		return New(filename), fmt.Errorf("config file doesn't exist at: %s", filename)
 	}
 
